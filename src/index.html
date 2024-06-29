@@ -7,13 +7,19 @@
 	</head>
 	<body>
 		<div class="header">
-			<form>
+			<div class="logo-container">
+				<img class="logo-img" src="./assets/logo.svg" />
+				<p class="logo-text">Weather App</p>
+			</div>
+			<form class="search">
 				<label for="location">
 					<input
 						type="text"
 						name="location"
 						id="location"
 						placeholder="Search by city"
+						value="Jijel"
+						maxlength="35"
 					/>
 				</label>
 
@@ -22,6 +28,7 @@
 		</div>
 		<div class="weather">
 			<div class="current"></div>
+			<div class="forecast"></div>
 		</div>
 	</body>
 </html>
