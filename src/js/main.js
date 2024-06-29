@@ -1,7 +1,13 @@
 import "../css/main.css";
 
-async function getForecastInfoForCity(city) {
-	city = city.toLowerCase();
+let location = "Jijel";
+
+async function processForecastInfo() {
+	const responseJson = await getForecastInfoForLocation(location);
+	return filterJsonForReleventData(responseJson);
+}
+
+async function getForecastInfoForLocation(city) {
 	try {
 		const response = await fetch(
 			`https://api.weatherapi.com/v1/forecast.json?key=52b1149f972d4a12843142300242606 &q=${city}&days=3`,
@@ -14,14 +20,6 @@ async function getForecastInfoForCity(city) {
 	} catch (error) {
 		return error;
 	}
-}
-
-async function processForecastInfo() {
-	const responseJson = await getForecastInfoForCity(
-		prompt("choose city?", "jijel")
-	);
-
-	console.log(filterJsonForReleventData(responseJson));
 }
 
 function filterJsonForReleventData(responseJson) {
@@ -43,14 +41,12 @@ function filterJsonForReleventData(responseJson) {
 	];
 
 	let currentWeather = responseJson.current;
-	let threeDaysForecastPerHour = [];
+	filterObjectForProperties(currentWeather, releventData);
 
+	let threeDaysForecastPerHour = [];
 	responseJson.forecast.forecastday.forEach((day) => {
 		threeDaysForecastPerHour.push(day.hour);
 	});
-
-	filterObjectForProperties(currentWeather, releventData);
-
 	threeDaysForecastPerHour.forEach((day) => {
 		day.forEach((hour) => {
 			hour = filterObjectForProperties(hour, releventData);
@@ -70,7 +66,13 @@ function filterObjectForProperties(object, properties) {
 }
 
 // demo ui
-const fetchDataButton = document.querySelector("button");
-fetchDataButton.addEventListener("click", () => {
-	processForecastInfo();
+const locationInput = document.querySelector("#location");
+const searchBtn = document.querySelector("#search");
+
+searchBtn.addEventListener("click", (e) => {
+	e.preventDefault();
+	location = locationInput.value;
+	processForecastInfo().then((info) => {
+		console.log(info);
+	});
 });
