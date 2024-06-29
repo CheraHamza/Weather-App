@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap");
+
+:root {
+	--night: #0e0e0eff;
+	--eerie-black: #2b251fff;
+	--taupe: #483c2fff;
+	--buff: #d8af7fff;
+	--sunset: #f4c58fff;
+	--light-orange: #fadbb9ff;
+	--linen: #fff1e2ff;
+}
+
+* {
+	font-family: "Merriweather", serif;
+}
+
+html,
+body {
+	background-color: var(--night);
+	height: 100vh;
+	width: 100vw;
+	margin: 0;
+	padding: 0;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	background-color: var(--eerie-black);
+	padding: 0.5rem 1.5rem;
+}
+
+.logo-container {
+	display: flex;
+	align-items: center;
+}
+.logo-container > img {
+	width: 3.125rem;
+	height: 3.125rem;
+	margin-right: 0.625rem;
+}
+.logo-text {
+	color: var(--sunset);
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+form.search {
+	position: relative;
+	margin-left: auto;
+	margin-right: 5rem;
+}
+
+input#location {
+	background-color: var(--linen);
+	width: 20rem;
+
+	font-size: 1.05rem;
+	padding: 0.2rem 0.5rem;
+
+	border: none;
+	border-radius: 0.2rem;
+	outline: none;
+}
+
+button#search {
+	position: absolute;
+	right: 0;
+	top: 0;
+
+	background-color: var(--sunset);
+	font-size: 1.05rem;
+	font-weight: 700;
+	padding: 0.2rem 0.5rem;
+
+	border: none;
+	border-radius: 0.2rem;
+
+	cursor: pointer;
+}
+
+button#search:hover {
+	background-color: var(--light-orange);
+}
