@@ -2,6 +2,8 @@
 
 :root {
 	--night: #0e0e0eff;
+	--davys-gray: #5e5b57ff;
+	--battleship-gray: #948d85ff;
 	--eerie-black: #2b251fff;
 	--taupe: #483c2fff;
 	--buff: #d8af7fff;
@@ -21,6 +23,8 @@ body {
 	width: 100vw;
 	margin: 0;
 	padding: 0;
+
+	overflow: hidden;
 }
 
 .header {
@@ -33,11 +37,11 @@ body {
 .logo-container {
 	display: flex;
 	align-items: center;
+	margin-left: 3rem;
 }
 .logo-container > img {
 	width: 3.125rem;
 	height: 3.125rem;
-	margin-right: 0.625rem;
 }
 .logo-text {
 	color: var(--sunset);
@@ -81,4 +85,135 @@ button#search {
 
 button#search:hover {
 	background-color: var(--light-orange);
+}
+
+.weather-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	padding: 1rem 2rem;
+	gap: 1rem;
+}
+
+.current-weather-container {
+	width: 95%;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	background-color: var(--light-orange);
+
+	border-radius: 0.5rem;
+
+	padding: 0.4rem 0;
+}
+
+.condition {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.condition > img {
+	width: 4rem;
+	height: 4rem;
+}
+
+.temperature-text {
+	margin: 0;
+
+	text-align: center;
+
+	font-size: 3rem;
+	font-weight: 700;
+}
+
+.feels-like-text {
+	text-align: center;
+	font-size: 0.9rem;
+	color: var(--davys-gray);
+}
+
+.forecast-container {
+	width: 95%;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+
+	padding: 1rem 0rem;
+
+	background-color: var(--light-orange);
+
+	border-radius: 0.5rem;
+}
+
+.forecast-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.forecast-item > .day {
+	font-size: 1.2rem;
+	font-weight: 900;
+}
+
+.hourly-forecast-container {
+	display: flex;
+	flex-direction: column;
+
+	height: 40vh;
+
+	background-color: var(--taupe);
+	color: var(--linen);
+
+	padding: 0.3rem 0.5rem;
+
+	overflow-y: auto;
+
+	border-radius: 0.2rem;
+}
+
+.hourly-forecast-container::-webkit-scrollbar {
+	display: none;
+}
+
+.hourly-forecast-container p {
+	margin: 0;
+}
+
+.hourly-forecast-item {
+	display: flex;
+	align-items: center;
+
+	gap: 1rem;
+
+	padding: 0.5rem 1rem;
+}
+
+.hourly-condition {
+	display: flex;
+	align-items: center;
+
+	gap: 0.5rem;
+}
+
+.hourly-condition > img {
+	width: 2.5rem;
+	height: 2.5rem;
+}
+
+.hourly-condition-text {
+	font-size: 0.9rem;
+
+	text-align: center;
+}
+
+.hourly-condition-text > .condition {
+	font-size: 0.8rem;
+
+	color: var(--battleship-gray);
 }
