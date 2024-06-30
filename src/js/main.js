@@ -1,6 +1,11 @@
 import "../css/main.css";
+import { format, formatRelative } from "date-fns";
 
-let location = "Jijel";
+let weather;
+
+async function saveProcessedForecastInfo() {
+	weather = await processForecastInfo();
+}
 
 async function processForecastInfo() {
 	const responseJson = await getForecastInfoForLocation(location);
@@ -29,15 +34,10 @@ function filterJsonForReleventData(responseJson) {
 		"condition",
 		"precip_mm",
 		"precip_in",
-		"humidity",
 		"feelslike_c",
 		"feelslike_f",
 		"uv",
-		"will_it_rain",
-		"chance_of_rain",
-		"will_it_snow",
-		"chance_of_snow",
-		"snow_cm",
+		"time",
 	];
 
 	let currentWeather = responseJson.current;
@@ -45,10 +45,10 @@ function filterJsonForReleventData(responseJson) {
 
 	let threeDaysForecastPerHour = [];
 	responseJson.forecast.forecastday.forEach((day) => {
-		threeDaysForecastPerHour.push(day.hour);
+		threeDaysForecastPerHour.push([day.date, day.hour]);
 	});
 	threeDaysForecastPerHour.forEach((day) => {
-		day.forEach((hour) => {
+		day[1].forEach((hour) => {
 			hour = filterObjectForProperties(hour, releventData);
 		});
 	});
@@ -65,14 +65,114 @@ function filterObjectForProperties(object, properties) {
 	return object;
 }
 
-// demo ui
+let location = "Jijel";
+
 const locationInput = document.querySelector("#location");
 const searchBtn = document.querySelector("#search");
 
 searchBtn.addEventListener("click", (e) => {
 	e.preventDefault();
 	location = locationInput.value;
-	processForecastInfo().then((info) => {
-		console.log(info);
-	});
+	displayCurrentWeather();
+	displayThreeDaysForecast();
 });
+
+function displayCurrentWeather() {
+	saveProcessedForecastInfo().then(() => {
+		const currentWeatherData = weather.current;
+
+		const conditionImg = document.querySelector(".condition>.condition-img");
+		conditionImg.src = currentWeatherData.condition.icon;
+
+		const conditionTxt = document.querySelector(".condition>.condition-text");
+		conditionTxt.textContent = currentWeatherData.condition.text;
+
+		const tempertureTxt = document.querySelector(
+			".temperature>.temperature-text"
+		);
+		tempertureTxt.textContent = Math.round(currentWeatherData.temp_c) + "° C";
+
+		const feelsLikeTxt = document.querySelector(".feels-like>.feels-like-text");
+		feelsLikeTxt.textContent = `Feels like ${Math.round(
+			currentWeatherData.feelslike_c
+		)}° C`;
+	});
+}
+
+function displayThreeDaysForecast() {
+	const forecastContainer = document.querySelector(".forecast-container");
+	forecastContainer.textContent = "";
+
+	saveProcessedForecastInfo().then(() => {
+		const threeDaysForecastData = weather.forecast;
+		threeDaysForecastData.forEach((day) => {
+			displayDayForecast(day);
+		});
+	});
+}
+
+function displayDayForecast(dayForecast) {
+	const forecastContainer = document.querySelector(".forecast-container");
+
+	const forecastItemContainer = document.createElement("div");
+	forecastItemContainer.className = "forecast-item";
+
+	forecastContainer.appendChild(forecastItemContainer);
+
+	const nameOfDay = document.createElement("p");
+	nameOfDay.className = "day";
+	nameOfDay.textContent = formatRelative(dayForecast[0], new Date())
+		.split("at")[0]
+		.toUpperCase();
+
+	forecastItemContainer.appendChild(nameOfDay);
+
+	const hourlyForecastContainer = document.createElement("div");
+	hourlyForecastContainer.className = "hourly-forecast-container";
+
+	forecastItemContainer.appendChild(hourlyForecastContainer);
+
+	dayForecast[1].forEach((hour) => {
+		const hourlyForecastItem = document.createElement("div");
+		hourlyForecastItem.className = "hourly-forecast-item";
+
+		hourlyForecastContainer.appendChild(hourlyForecastItem);
+
+		const hourTxt = document.createElement("p");
+		hourTxt.className = "hour";
+		hourTxt.textContent = format(new Date(hour.time), "HH:mm");
+
+		hourlyForecastItem.appendChild(hourTxt);
+
+		const hourlyConditionContainer = document.createElement("div");
+		hourlyConditionContainer.className = "hourly-condition-container";
+
+		hourlyForecastItem.appendChild(hourlyConditionContainer);
+
+		const conditionImg = document.createElement("img");
+		conditionImg.className = "condition-img";
+		conditionImg.src = hour.condition.icon;
+
+		hourlyConditionContainer.appendChild(conditionImg);
+
+		const hourlyConditionTxt = document.createElement("div");
+		hourlyConditionTxt.className = "hourly-condition-text";
+
+		hourlyConditionContainer.appendChild(hourlyConditionTxt);
+
+		const temperatureTxt = document.createElement("p");
+		temperatureTxt.className = "temperature";
+		temperatureTxt.textContent = `${Math.round(hour.temp_c)}° C`;
+
+		hourlyConditionTxt.appendChild(temperatureTxt);
+
+		const conditionTxt = document.createElement("p");
+		conditionTxt.className = "condition";
+		conditionTxt.textContent = hour.condition.text;
+
+		hourlyConditionTxt.appendChild(conditionTxt);
+	});
+}
+
+displayCurrentWeather();
+displayThreeDaysForecast();
