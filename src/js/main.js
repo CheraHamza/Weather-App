@@ -1,5 +1,7 @@
 import "../css/main.css";
 import { format, formatRelative } from "date-fns";
+import fahrenheitIcon from "../assets/fahrenheit.svg";
+import celciusIcon from "../assets/celcius.svg";
 
 let weather;
 
@@ -50,8 +52,6 @@ function filterJsonForReleventData(responseJson) {
 	let currentWeather = responseJson.current;
 	filterObjectForProperties(currentWeather, releventData);
 
-	console.log(currentWeather);
-
 	let threeDaysForecastPerHour = [];
 	responseJson.forecast.forecastday.forEach((day) => {
 		threeDaysForecastPerHour.push([day.date, day.hour]);
@@ -61,8 +61,6 @@ function filterJsonForReleventData(responseJson) {
 			hour = filterObjectForProperties(hour, releventData);
 		});
 	});
-
-	console.log(threeDaysForecastPerHour);
 
 	return {
 		current: currentWeather,
@@ -80,8 +78,32 @@ function filterObjectForProperties(object, properties) {
 	return object;
 }
 
-let location = "Jijel";
+const celciusData = {
+	name: "celcius",
+	symbol: "° C",
+	tempSource: "temp_c",
+	feelsLikeSource: "feelslike_c",
+	icon: celciusIcon,
+};
 
+const fahrenheitData = {
+	name: "fahrenheit",
+	symbol: "° F",
+	tempSource: "temp_f",
+	feelsLikeSource: "feelslike_f",
+	icon: fahrenheitIcon,
+};
+
+let unitInUse = celciusData;
+
+const tempUnitIcon = document.querySelector("#temp-unit");
+tempUnitIcon.addEventListener("click", () => {
+	tempUnitIcon.src = unitInUse.icon;
+	unitInUse = unitInUse == celciusData ? fahrenheitData : celciusData;
+	searchBtn.click();
+});
+
+let location = "Jijel";
 const locationInput = document.querySelector("#location");
 const searchBtn = document.querySelector("#search");
 
@@ -122,12 +144,13 @@ function displayCurrentWeather() {
 		const tempertureTxt = document.querySelector(
 			".temperature>.temperature-text"
 		);
-		tempertureTxt.textContent = Math.round(currentWeatherData.temp_c) + "° C";
+		tempertureTxt.textContent =
+			Math.round(currentWeatherData[unitInUse.tempSource]) + unitInUse.symbol;
 
 		const feelsLikeTxt = document.querySelector(".feels-like>.feels-like-text");
 		feelsLikeTxt.textContent = `Feels like ${Math.round(
-			currentWeatherData.feelslike_c
-		)}° C`;
+			currentWeatherData[unitInUse.feelsLikeSource]
+		)} ${unitInUse.symbol}`;
 	});
 }
 
@@ -194,7 +217,9 @@ function displayDayForecast(dayForecast) {
 
 		const temperatureTxt = document.createElement("p");
 		temperatureTxt.className = "temperature";
-		temperatureTxt.textContent = `${Math.round(hour.temp_c)}° C`;
+		temperatureTxt.textContent = `${Math.round(hour[unitInUse.tempSource])}${
+			unitInUse.symbol
+		}`;
 
 		hourlyConditionTxt.appendChild(temperatureTxt);
 
