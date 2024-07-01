@@ -37,7 +37,7 @@ body {
 .logo-container {
 	display: flex;
 	align-items: center;
-	margin-left: 3rem;
+	margin-left: 10%;
 }
 .logo-container > img {
 	width: 3.125rem;
@@ -52,12 +52,12 @@ body {
 form.search {
 	position: relative;
 	margin-left: auto;
-	margin-right: 5rem;
+	margin-right: 11%;
 }
 
 input#location {
 	background-color: var(--linen);
-	width: 20rem;
+	width: 15rem;
 
 	font-size: 1.05rem;
 	padding: 0.2rem 0.5rem;
@@ -98,17 +98,52 @@ button#search:hover {
 }
 
 .current-weather-container {
-	width: 95%;
+	width: 80%;
 
 	display: flex;
-	flex-direction: column;
 	justify-content: center;
-
+	gap: 30%;
+	align-items: center;
 	background-color: var(--light-orange);
 
 	border-radius: 0.5rem;
 
 	padding: 0.4rem 0;
+}
+
+.current-weather-container > .time-location-info {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.time-location-info > p {
+	margin: 0.5rem;
+}
+
+.time-location-info > .location {
+	max-width: 12.5rem;
+
+	color: var(--eerie-black);
+	font-weight: bold;
+	font-size: 1.5rem;
+	text-align: center;
+}
+
+.time-location-info > .location img {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.time-location-info > .time {
+	color: var(--taupe);
+	font-size: 0.9rem;
+}
+
+.current-weather-container > .weather-info {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .condition {
@@ -138,7 +173,7 @@ button#search:hover {
 }
 
 .forecast-container {
-	width: 95%;
+	width: 80%;
 	display: flex;
 	align-items: center;
 	justify-content: space-around;
@@ -166,7 +201,7 @@ button#search:hover {
 .hourly-forecast-container {
 	display: flex;
 	flex-direction: column;
-	width: 90%;
+	width: min(90%, 17rem);
 	height: 40vh;
 
 	background-color: var(--taupe);
