@@ -38,10 +38,19 @@ function filterJsonForReleventData(responseJson) {
 		"feelslike_f",
 		"uv",
 		"time",
+		"name",
+		"region",
+		"country",
+		"localtime",
 	];
+
+	let currentLocationAndTime = responseJson.location;
+	filterObjectForProperties(currentLocationAndTime, releventData);
 
 	let currentWeather = responseJson.current;
 	filterObjectForProperties(currentWeather, releventData);
+
+	console.log(currentWeather);
 
 	let threeDaysForecastPerHour = [];
 	responseJson.forecast.forecastday.forEach((day) => {
@@ -53,7 +62,13 @@ function filterJsonForReleventData(responseJson) {
 		});
 	});
 
-	return { current: currentWeather, forecast: threeDaysForecastPerHour };
+	console.log(threeDaysForecastPerHour);
+
+	return {
+		current: currentWeather,
+		forecast: threeDaysForecastPerHour,
+		timeAndLocation: currentLocationAndTime,
+	};
 }
 
 function filterObjectForProperties(object, properties) {
@@ -72,10 +87,27 @@ const searchBtn = document.querySelector("#search");
 
 searchBtn.addEventListener("click", (e) => {
 	e.preventDefault();
+	searchAndUpdateWeatherInfo();
+});
+
+function searchAndUpdateWeatherInfo() {
 	location = locationInput.value;
+	displayTimeAndLocationInfo();
 	displayCurrentWeather();
 	displayThreeDaysForecast();
-});
+}
+
+function displayTimeAndLocationInfo() {
+	saveProcessedForecastInfo().then(() => {
+		const timeAndLocation = weather.timeAndLocation;
+
+		const timeTxt = document.querySelector(".time");
+		timeTxt.textContent = format(timeAndLocation.localtime, "EEEE HH:mm");
+
+		const locationTxt = document.querySelector(".location>.text");
+		locationTxt.textContent = `${timeAndLocation.region}, ${timeAndLocation.country}`;
+	});
+}
 
 function displayCurrentWeather() {
 	saveProcessedForecastInfo().then(() => {
@@ -174,5 +206,5 @@ function displayDayForecast(dayForecast) {
 	});
 }
 
-displayCurrentWeather();
-displayThreeDaysForecast();
+// displayCurrentWeather();
+// displayThreeDaysForecast();
