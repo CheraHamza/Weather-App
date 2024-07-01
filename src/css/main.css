@@ -52,7 +52,7 @@ body {
 form.search {
 	position: relative;
 	margin-left: auto;
-	margin-right: 11%;
+	margin-right: 0.5rem;
 }
 
 input#location {
@@ -85,6 +85,27 @@ button#search {
 
 button#search:hover {
 	background-color: var(--light-orange);
+}
+
+.temp-unit {
+	display: flex;
+	align-items: center;
+	margin-right: 11%;
+}
+
+.temp-unit > img {
+	width: 1.5rem;
+	height: 1.5rem;
+
+	padding: 0.2rem 0.6rem;
+	background-color: var(--light-orange);
+	border-radius: 0.6rem;
+
+	cursor: pointer;
+}
+
+.temp-unit > img:hover {
+	background-color: var(--buff);
 }
 
 .weather-container {
