@@ -113,7 +113,10 @@ searchBtn.addEventListener("click", (e) => {
 });
 
 function searchAndUpdateWeatherInfo() {
-	location = locationInput.value;
+	if (locationInput.value != "") {
+		location = locationInput.value;
+	}
+
 	displayTimeAndLocationInfo();
 	displayCurrentWeather();
 	displayThreeDaysForecast();
@@ -231,5 +234,4 @@ function displayDayForecast(dayForecast) {
 	});
 }
 
-// displayCurrentWeather();
-// displayThreeDaysForecast();
+searchAndUpdateWeatherInfo();
