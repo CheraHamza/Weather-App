@@ -251,6 +251,14 @@ button#search:hover {
 	padding: 0.5rem 1rem;
 }
 
+.hourly-forecast-container > .hourly-forecast-item {
+	border-bottom: 1px solid var(--davys-gray);
+}
+
+.hourly-forecast-container > .hourly-forecast-item:last-child {
+	border-bottom: none;
+}
+
 .hourly-condition-container {
 	width: 50%;
 	display: flex;
