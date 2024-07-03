@@ -109,6 +109,7 @@ button#search:hover {
 }
 
 .weather-container {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -281,4 +282,28 @@ button#search:hover {
 	font-size: 0.8rem;
 
 	color: var(--battleship-gray);
+}
+
+.error {
+	position: absolute;
+	top: 0.625rem;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2rem;
+
+	font-size: 6rem;
+	color: var(--linen);
+
+	height: 86vh;
+	width: 85%;
+	background-color: var(--davys-gray);
+
+	border-radius: 0.5rem;
+}
+
+.error-text {
+	font-size: 1.5rem;
 }
