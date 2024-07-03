@@ -6,12 +6,31 @@ import celciusIcon from "../assets/celcius.svg";
 let weather;
 
 async function saveProcessedForecastInfo() {
-	weather = await processForecastInfo();
+	try {
+		const processedInfo = await processForecastInfo();
+		if (processedInfo) {
+			weather = processedInfo;
+		} else {
+			const errorMessage = "An error occurred while saving weather data.";
+			throw new Error(errorMessage);
+		}
+	} catch (error) {
+		console.error("Error saving weather data:", error);
+	}
 }
 
 async function processForecastInfo() {
-	const responseJson = await getForecastInfoForLocation(location);
-	return filterJsonForReleventData(responseJson);
+	try {
+		const responseJson = await getForecastInfoForLocation(location);
+		if (responseJson) {
+			return filterJsonForReleventData(responseJson);
+		} else {
+			const errorMessage = "An error occurred while processing weather data.";
+			throw new Error(errorMessage);
+		}
+	} catch (error) {
+		console.error("Error processing weather data:", error);
+	}
 }
 
 async function getForecastInfoForLocation(city) {
@@ -23,10 +42,34 @@ async function getForecastInfoForLocation(city) {
 
 		if (response.ok) {
 			return await response.json();
+		} else {
+			const errorData = await response.json();
+			const errorMessage =
+				errorData.error?.message ||
+				"An error occurred while fetching weather data.";
+			throw new Error(errorMessage);
 		}
 	} catch (error) {
-		return error;
+		console.error("Error fetching weather data:", error);
+		displayErrorMessage(`Error: ${error.message}`);
 	}
+}
+
+function displayErrorMessage(errorMessage) {
+	const weatherContainer = document.querySelector(".weather-container");
+
+	const errorPanel = document.createElement("div");
+	errorPanel.className = "error";
+	weatherContainer.appendChild(errorPanel);
+
+	const errorFace = document.createElement("div");
+	errorFace.textContent = "( ● _ ●  )";
+	errorPanel.appendChild(errorFace);
+
+	const errorTxt = document.createElement("div");
+	errorTxt.className = "error-text";
+	errorTxt.textContent = errorMessage;
+	errorPanel.appendChild(errorTxt);
 }
 
 function filterJsonForReleventData(responseJson) {
@@ -117,55 +160,65 @@ function searchAndUpdateWeatherInfo() {
 		location = locationInput.value;
 	}
 
-	displayTimeAndLocationInfo();
-	displayCurrentWeather();
-	displayThreeDaysForecast();
+	removeErrorMessage();
+
+	saveProcessedForecastInfo()
+		.then(() => {
+			if (weather) {
+				displayTimeAndLocationInfo();
+				displayCurrentWeather();
+				displayThreeDaysForecast();
+			}
+		})
+		.catch((error) => {
+			console.error(error);
+		});
+}
+
+function removeErrorMessage() {
+	const errorPanel = document.querySelector(".error");
+	if (errorPanel) {
+		errorPanel.remove();
+	}
 }
 
 function displayTimeAndLocationInfo() {
-	saveProcessedForecastInfo().then(() => {
-		const timeAndLocation = weather.timeAndLocation;
+	const timeAndLocation = weather.timeAndLocation;
 
-		const timeTxt = document.querySelector(".time");
-		timeTxt.textContent = format(timeAndLocation.localtime, "EEEE HH:mm");
+	const timeTxt = document.querySelector(".time");
+	timeTxt.textContent = format(timeAndLocation.localtime, "EEEE HH:mm");
 
-		const locationTxt = document.querySelector(".location>.text");
-		locationTxt.textContent = `${timeAndLocation.region}, ${timeAndLocation.country}`;
-	});
+	const locationTxt = document.querySelector(".location>.text");
+	locationTxt.textContent = `${timeAndLocation.name}, ${timeAndLocation.country}`;
 }
 
 function displayCurrentWeather() {
-	saveProcessedForecastInfo().then(() => {
-		const currentWeatherData = weather.current;
+	const currentWeatherData = weather.current;
 
-		const conditionImg = document.querySelector(".condition>.condition-img");
-		conditionImg.src = currentWeatherData.condition.icon;
+	const conditionImg = document.querySelector(".condition>.condition-img");
+	conditionImg.src = currentWeatherData.condition.icon;
 
-		const conditionTxt = document.querySelector(".condition>.condition-text");
-		conditionTxt.textContent = currentWeatherData.condition.text;
+	const conditionTxt = document.querySelector(".condition>.condition-text");
+	conditionTxt.textContent = currentWeatherData.condition.text;
 
-		const tempertureTxt = document.querySelector(
-			".temperature>.temperature-text"
-		);
-		tempertureTxt.textContent =
-			Math.round(currentWeatherData[unitInUse.tempSource]) + unitInUse.symbol;
+	const tempertureTxt = document.querySelector(
+		".temperature>.temperature-text"
+	);
+	tempertureTxt.textContent =
+		Math.round(currentWeatherData[unitInUse.tempSource]) + unitInUse.symbol;
 
-		const feelsLikeTxt = document.querySelector(".feels-like>.feels-like-text");
-		feelsLikeTxt.textContent = `Feels like ${Math.round(
-			currentWeatherData[unitInUse.feelsLikeSource]
-		)} ${unitInUse.symbol}`;
-	});
+	const feelsLikeTxt = document.querySelector(".feels-like>.feels-like-text");
+	feelsLikeTxt.textContent = `Feels like ${Math.round(
+		currentWeatherData[unitInUse.feelsLikeSource]
+	)} ${unitInUse.symbol}`;
 }
 
 function displayThreeDaysForecast() {
 	const forecastContainer = document.querySelector(".forecast-container");
 	forecastContainer.textContent = "";
-
-	saveProcessedForecastInfo().then(() => {
-		const threeDaysForecastData = weather.forecast;
-		threeDaysForecastData.forEach((day) => {
-			displayDayForecast(day);
-		});
+	const threeDaysForecastData = weather.forecast;
+	threeDaysForecastData.forEach((day) => {
+		displayDayForecast(day);
 	});
 }
 
