@@ -51,7 +51,7 @@ async function getForecastInfoForLocation(city) {
 		}
 	} catch (error) {
 		console.error("Error fetching weather data:", error);
-		displayErrorMessage(`Error: ${error.message}`);
+		displayErrorMessage(`Oops: ${error.message}`);
 	}
 }
 
@@ -143,14 +143,14 @@ function searchAndUpdateWeatherInfo() {
 
 	saveProcessedForecastInfo()
 		.then(() => {
+			toggleLoadingComponent(); // remove loading component
 			if (weather) {
 				if (inputLocationMatchResponseLocation()) {
-					toggleLoadingComponent(); // remove loading component
 					displayTimeAndLocationInfo();
 					displayCurrentWeather();
 					displayThreeDaysForecast();
 				} else {
-					const errorMsg = "No such location is found!";
+					const errorMsg = "Oops: City could not be found!";
 					throw new Error(errorMsg);
 				}
 			}
