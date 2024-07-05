@@ -284,7 +284,8 @@ button#search:hover {
 	color: var(--battleship-gray);
 }
 
-.error {
+.error,
+.loader-container {
 	position: absolute;
 	top: 0.625rem;
 
@@ -295,15 +296,40 @@ button#search:hover {
 	gap: 2rem;
 
 	font-size: 6rem;
-	color: var(--linen);
+	color: var(--eerie-black);
 
 	height: 86vh;
 	width: 85%;
-	background-color: var(--davys-gray);
+	background-color: var(--light-orange);
 
 	border-radius: 0.5rem;
 }
 
 .error-text {
 	font-size: 1.5rem;
+}
+
+.loader-container {
+	background-color: var(--light-orange);
+	color: var(--eerie-black);
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+.loader {
+	border: 20px solid var(--linen);
+	border-top: 20px solid var(--eerie-black);
+	border-radius: 50%;
+	width: 120px;
+	height: 120px;
+	animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
