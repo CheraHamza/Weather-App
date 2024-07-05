@@ -55,36 +55,15 @@ async function getForecastInfoForLocation(city) {
 	}
 }
 
-function displayErrorMessage(errorMessage) {
-	const weatherContainer = document.querySelector(".weather-container");
-
-	const errorPanel = document.createElement("div");
-	errorPanel.className = "error";
-	weatherContainer.appendChild(errorPanel);
-
-	const errorFace = document.createElement("div");
-	errorFace.textContent = "( ● _ ●  )";
-	errorPanel.appendChild(errorFace);
-
-	const errorTxt = document.createElement("div");
-	errorTxt.className = "error-text";
-	errorTxt.textContent = errorMessage;
-	errorPanel.appendChild(errorTxt);
-}
-
 function filterJsonForReleventData(responseJson) {
 	const releventData = [
 		"temp_c",
 		"temp_f",
 		"condition",
-		"precip_mm",
-		"precip_in",
 		"feelslike_c",
 		"feelslike_f",
-		"uv",
 		"time",
 		"name",
-		"region",
 		"country",
 		"localtime",
 	];
@@ -159,20 +138,73 @@ function searchAndUpdateWeatherInfo() {
 	if (locationInput.value != "") {
 		location = locationInput.value;
 	}
-
+	toggleLoadingComponent();
 	removeErrorMessage();
 
 	saveProcessedForecastInfo()
 		.then(() => {
 			if (weather) {
-				displayTimeAndLocationInfo();
-				displayCurrentWeather();
-				displayThreeDaysForecast();
+				if (inputLocationMatchResponseLocation()) {
+					toggleLoadingComponent(); // remove loading component
+					displayTimeAndLocationInfo();
+					displayCurrentWeather();
+					displayThreeDaysForecast();
+				} else {
+					const errorMsg = "No such location is found!";
+					throw new Error(errorMsg);
+				}
 			}
 		})
 		.catch((error) => {
+			displayErrorMessage(error);
 			console.error(error);
 		});
+}
+
+function inputLocationMatchResponseLocation() {
+	const responseLocation = weather.timeAndLocation.name.toLowerCase();
+	const inputLocation = locationInput.value.toLowerCase();
+
+	return responseLocation.includes(inputLocation);
+}
+
+function toggleLoadingComponent() {
+	const isLoading = document.querySelector(".loader-container");
+
+	if (isLoading) {
+		isLoading.remove();
+	} else {
+		const weatherContainer = document.querySelector(".weather-container");
+
+		const loaderContainer = document.createElement("div");
+		loaderContainer.className = "loader-container";
+		weatherContainer.appendChild(loaderContainer);
+
+		const loader = document.createElement("div");
+		loader.className = "loader";
+		loaderContainer.appendChild(loader);
+
+		const loaderTxt = document.createElement("div");
+		loaderTxt.textContent = "Fetching Weather Data...";
+		loaderContainer.appendChild(loaderTxt);
+	}
+}
+
+function displayErrorMessage(errorMessage) {
+	const weatherContainer = document.querySelector(".weather-container");
+
+	const errorPanel = document.createElement("div");
+	errorPanel.className = "error";
+	weatherContainer.appendChild(errorPanel);
+
+	const errorFace = document.createElement("div");
+	errorFace.textContent = "( ● _ ●  )";
+	errorPanel.appendChild(errorFace);
+
+	const errorTxt = document.createElement("div");
+	errorTxt.className = "error-text";
+	errorTxt.textContent = errorMessage;
+	errorPanel.appendChild(errorTxt);
 }
 
 function removeErrorMessage() {
