@@ -265,7 +265,7 @@ function displayDayForecast(dayForecast) {
 	const nameOfDay = document.createElement("p");
 	nameOfDay.className = "day";
 	nameOfDay.textContent = formatRelative(dayForecast[0], new Date())
-		.split("at")[0]
+		.split(" at ")[0]
 		.toUpperCase();
 
 	forecastItemContainer.appendChild(nameOfDay);
